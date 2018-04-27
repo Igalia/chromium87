@@ -257,6 +257,11 @@ void WaylandWindow::SetWindowIcons(const gfx::ImageSkia& window_icon,
 
 void WaylandWindow::SizeConstraintsChanged() {}
 
+void WaylandWindow::SetSurfaceId(int surface_id) {
+  NOTREACHED() << "WaylandWindow gets the surface id from the "
+    "PlatformWindowInitProperties passed to ::Initialize method";
+}
+
 bool WaylandWindow::CanDispatchEvent(const PlatformEvent& event) {
   if (event->IsMouseEvent())
     return has_pointer_focus_;
@@ -548,6 +553,7 @@ bool WaylandWindow::Initialize(PlatformWindowInitProperties properties) {
   bounds_px_ = properties.bounds;
   opacity_ = properties.opacity;
   type_ = properties.type;
+  surface_id_ = properties.surface_id;
 
   connection_->wayland_window_manager()->AddWindow(GetWidget(), this);
 

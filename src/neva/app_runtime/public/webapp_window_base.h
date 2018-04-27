@@ -106,6 +106,7 @@ class APP_RUNTIME_EXPORT WebAppWindowBase : WebAppWindowDelegate {
   void SetGroupKeyMask(KeyMask key_mask);
   void SetKeyMask(KeyMask key_mask, bool set);
   void SetWindowProperty(const std::string& name, const std::string& value);
+  void SetWindowSurfaceId(int surface_id);
   void SetLocationHint(LocationHint value);
   void SetOpacity(float opacity);
   void Resize(int width, int height);
@@ -134,6 +135,7 @@ class APP_RUNTIME_EXPORT WebAppWindowBase : WebAppWindowDelegate {
       XInputEventType eventType = XInputEventType::XINPUT_PRESS_AND_RELEASE);
 
  private:
+  int pending_surface_id_;
   WebAppWindow* webapp_window_;
 };
 

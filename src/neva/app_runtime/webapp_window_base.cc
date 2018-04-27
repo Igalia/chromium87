@@ -122,15 +122,17 @@ WebAppWindow::CreateParams ToWebAppWindowParams(
 ////////////////////////////////////////////////////////////////////////////////
 // WebAppWindowBase, public:
 
-WebAppWindowBase::WebAppWindowBase() {
+WebAppWindowBase::WebAppWindowBase() : pending_surface_id_(0) {
   CreateParams params;
   params.width = kDefaultWidth;
   params.height = kDefaultHeight;
-  webapp_window_ = new WebAppWindow(ToWebAppWindowParams(params), this);
+  webapp_window_ = new WebAppWindow(ToWebAppWindowParams(params), this, pending_surface_id_);
 }
 
 WebAppWindowBase::WebAppWindowBase(const CreateParams& params)
-    : webapp_window_(new WebAppWindow(ToWebAppWindowParams(params), this)) {}
+  : pending_surface_id_(0),
+    webapp_window_(new WebAppWindow(ToWebAppWindowParams(params), this, pending_surface_id_)) {
+}
 
 WebAppWindowBase::~WebAppWindowBase() {
   // As far as WebAppWindow is the instance of WidgetDelegateView,
@@ -233,6 +235,13 @@ void WebAppWindowBase::SetWindowProperty(const std::string& name,
 
 void WebAppWindowBase::SetLocationHint(LocationHint value) {
   webapp_window_->SetLocationHint(ToGfxLocationHint(value));
+}
+
+void WebAppWindowBase::SetWindowSurfaceId(int surface_id) {
+  if (webapp_window_)
+    webapp_window_->SetWindowSurfaceId(surface_id);
+  else
+    pending_surface_id_ = surface_id;
 }
 
 void WebAppWindowBase::SetOpacity(float opacity) {
