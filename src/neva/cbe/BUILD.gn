@@ -33,14 +33,13 @@ if (use_cbe) {
 
     if (is_chrome_cbe) {
       sources += [
-        "app/chrome_dll_resource.h",
-        "app/chrome_main.cc",
-        "app/chrome_main_delegate.cc",
-        "app/chrome_main_delegate.h",
+        "../../chrome/app/chrome_dll_resource.h",
+        "../../chrome/app/chrome_main.cc",
+        "../../chrome/app/chrome_main_delegate.cc",
+        "../../chrome/app/chrome_main_delegate.h",
       ]
 
       deps += [
-        "//build/config:exe_and_shlib_deps",
         # On Linux, link the dependencies (libraries) that make up actual
         # Chromium functionality directly into the executable.
         "//chrome:browser_dependencies",
@@ -51,7 +50,6 @@ if (use_cbe) {
 
         # For headless mode.
         "//headless:headless_shell_lib",
-        "//services/service_manager/embedder",
       ]
 
       public_deps += [
@@ -75,7 +73,7 @@ if (use_cbe) {
       ]
     }
 
-    if (is_webos) {
+    if (is_webos || is_agl) {
       deps += [
         "//webos:weboswebruntime"
       ]
