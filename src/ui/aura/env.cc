@@ -25,7 +25,7 @@
 #include "ui/ozone/public/ozone_platform.h"
 #endif
 
-#if defined(OS_WEBOS)
+#if defined(USE_SINGLE_WINDOW_MODE)
 #include "ui/aura/window_tree_host.h"
 #endif
 
@@ -118,7 +118,7 @@ bool Env::HasInstance() {
   return !!g_primary_instance;
 }
 
-#if defined(OS_WEBOS)
+#if defined(USE_SINGLE_WINDOW_MODE)
 // static
 Window* Env::GetRootWindow() {
   return GetInstance()->RootWindow();
@@ -255,7 +255,7 @@ void Env::NotifyWindowInitialized(Window* window) {
 }
 
 void Env::NotifyHostInitialized(WindowTreeHost* host) {
-#if defined(OS_WEBOS)
+#if defined(USE_SINGLE_WINDOW_MODE)
   if (host)
     root_window_ = host->window();
 #endif
