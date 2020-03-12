@@ -49,6 +49,8 @@ gfx::Rect StubWindow::GetBounds() {
 
 void StubWindow::SetTitle(const base::string16& title) {}
 
+void StubWindow::SetAppId(const std::string& title) {}
+
 void StubWindow::SetCapture() {}
 
 void StubWindow::ReleaseCapture() {}
@@ -91,6 +93,14 @@ void StubWindow::MoveCursorTo(const gfx::Point& location) {}
 void StubWindow::ConfineCursorToBounds(const gfx::Rect& bounds) {}
 
 void StubWindow::SetSurfaceId(int surface_id) {}
+
+void StubWindow::SetAglPanel(int edge) {}
+
+void StubWindow::SetAglBackground(void) {}
+
+void StubWindow::SetAglReady(void) {}
+
+void StubWindow::SetAglActivateApp(std::string app) {}
 
 void StubWindow::SetRestoredBoundsInPixels(const gfx::Rect& bounds) {}
 

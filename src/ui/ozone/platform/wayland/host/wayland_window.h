@@ -14,6 +14,7 @@
 #include "base/containers/flat_set.h"
 #include "base/gtest_prod_util.h"
 #include "base/memory/ref_counted.h"
+#include "base/timer/timer.h"
 #include "ui/events/platform/platform_event_dispatcher.h"
 #include "ui/gfx/geometry/rect.h"
 #include "ui/gfx/native_widget_types.h"
@@ -113,6 +114,8 @@ class WaylandWindow : public PlatformWindow, public PlatformEventDispatcher {
     return entered_outputs_ids_;
   }
 
+  WaylandConnection* connection() { return connection_; }
+
   // Returns current type of the window.
   PlatformWindowType type() const { return type_; }
 
@@ -125,7 +128,12 @@ class WaylandWindow : public PlatformWindow, public PlatformEventDispatcher {
   void SetBounds(const gfx::Rect& bounds) override;
   gfx::Rect GetBounds() override;
   void SetSurfaceId(int surface_id) override;
+  void SetAglBackground(void) override;
+  void SetAglReady(void) override;
+  void SetAglPanel(int edge) override;
+  void SetAglActivateApp(std::string app) override;
   void SetTitle(const base::string16& title) override;
+  void SetAppId(const std::string& app_id) override;
   void SetCapture() override;
   void ReleaseCapture() override;
   bool HasCapture() const override;
@@ -218,6 +226,8 @@ class WaylandWindow : public PlatformWindow, public PlatformEventDispatcher {
   // Returns a top most child window within the same hierarchy.
   WaylandWindow* GetTopMostChildWindow();
 
+  void SetReadyCallback();
+
   // This should be called when a WaylandSurface part of this window becomes
   // partially or fully within the scanout region of |output|.
   void AddEnteredOutputId(struct wl_output* output);
@@ -238,7 +248,6 @@ class WaylandWindow : public PlatformWindow, public PlatformEventDispatcher {
   WaylandWindow(PlatformWindowDelegate* delegate,
                 WaylandConnection* connection);
 
-  WaylandConnection* connection() { return connection_; }
   PlatformWindowDelegate* delegate() { return delegate_; }
 
   // Sets bounds in dip.
@@ -330,6 +339,8 @@ class WaylandWindow : public PlatformWindow, public PlatformEventDispatcher {
 
   // AcceleratedWidget for this window. This will be unique even over time.
   gfx::AcceleratedWidget accelerated_widget_;
+
+  base::OneShotTimer set_ready_timer_;
 
   DISALLOW_COPY_AND_ASSIGN(WaylandWindow);
 };

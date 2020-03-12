@@ -755,6 +755,7 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
 
   // Tell the window to update its title from the delegate.
   void UpdateWindowTitle();
+  void SetAglAppId(const std::string& app_id);
 
   // Tell the window to update its icon from the delegate.
   void UpdateWindowIcon();

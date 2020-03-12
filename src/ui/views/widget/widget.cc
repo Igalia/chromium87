@@ -875,6 +875,13 @@ void Widget::UpdateWindowTitle() {
   non_client_view_->UpdateWindowTitle();
 }
 
+void
+Widget::SetAglAppId(const std::string& app_id)
+{
+	native_widget_->SetAglAppId(app_id);
+}
+
+
 void Widget::UpdateWindowIcon() {
   if (non_client_view_)
     non_client_view_->UpdateWindowIcon();

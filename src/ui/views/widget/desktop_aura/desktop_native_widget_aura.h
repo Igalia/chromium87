@@ -144,6 +144,7 @@ class VIEWS_EXPORT DesktopNativeWidgetAura
   void GetWindowPlacement(gfx::Rect* bounds,
                           ui::WindowShowState* maximized) const override;
   bool SetWindowTitle(const base::string16& title) override;
+  bool SetAglAppId(const std::string& title) override;
   void SetWindowIcons(const gfx::ImageSkia& window_icon,
                       const gfx::ImageSkia& app_icon) override;
   void InitModalType(ui::ModalType modal_type) override;

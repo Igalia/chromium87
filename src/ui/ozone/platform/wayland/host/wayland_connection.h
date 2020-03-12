@@ -9,9 +9,13 @@
 #include <vector>
 
 #include <ivi-application-client-protocol.h>
+#include <agl-shell-client-protocol.h>
+#include <agl-shell-desktop-client-protocol.h>
 
 #include "third_party/skia/include/core/SkBitmap.h"
 #include "ui/events/event.h"
+#include "ui/ozone/platform/wayland/agl_shell_wrapper.h"
+#include "ui/ozone/platform/wayland/agl_shell_desktop_wrapper.h"
 #include "ui/ozone/platform/wayland/common/wayland_object.h"
 #include "ui/ozone/platform/wayland/host/wayland_clipboard.h"
 #include "ui/ozone/platform/wayland/host/wayland_data_drag_controller.h"
@@ -81,6 +85,8 @@ class WaylandConnection {
   zxdg_shell_v6* shell_v6() const { return shell_v6_.get(); }
   zaura_shell* aura_shell() const { return aura_shell_.get(); }
   ivi_application* ivi_shell() const { return ivi_application_; }
+  agl_shell *ashell() const { return agl_shell_.get(); }
+  agl_shell_desktop *ashell_desktop() const { return agl_shell_desktop_.get(); }
 #if !defined(USE_NEVA_APPRUNTIME)
   wl_seat* seat() const { return seat_.get(); }
 #endif  // !defined(USE_NEVA_APPRUNTIME)
@@ -162,6 +168,9 @@ class WaylandConnection {
 #endif  // !defined(USE_NEVA_APPRUNTIME)
 
   WaylandClipboard* clipboard() const { return clipboard_.get(); }
+
+  ui::AglShell *agl_shell_manager;
+  ui::AglShellDesktop *agl_shell_desktop_manager;
 
   WaylandOutputManager* wayland_output_manager() const {
     return wayland_output_manager_.get();
@@ -255,6 +264,13 @@ class WaylandConnection {
   // xdg_wm_base_listener
   static void Ping(void* data, xdg_wm_base* shell, uint32_t serial);
 
+  // agl_shell_desktop listener
+  static void AglDesktopAppIdEvent(void *data, struct agl_shell_desktop *agl_shell_desktop,
+                                   const char *app_id);
+  static void AglDesktopAppStateEvent(void *data, struct agl_shell_desktop *agl_shell_desktop,
+                                      const char *app_id, const char *app_data,
+                                      uint32_t app_state, uint32_t app_role);
+
   uint32_t compositor_version_ = 0;
   wl::Object<wl_display> display_;
   wl::Object<wl_registry> registry_;
@@ -265,6 +281,8 @@ class WaylandConnection {
 #endif  // !defined(USE_NEVA_APPRUNTIME)
   wl::Object<xdg_wm_base> shell_;
   wl::Object<zxdg_shell_v6> shell_v6_;
+  wl::Object<agl_shell> agl_shell_;
+  wl::Object<agl_shell_desktop> agl_shell_desktop_;
   // TODO(msisov): use wl::Object.
   ivi_application* ivi_application_ = nullptr;
   wl::Object<wp_presentation> presentation_;

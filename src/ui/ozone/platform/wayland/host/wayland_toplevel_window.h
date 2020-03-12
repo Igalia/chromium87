@@ -51,6 +51,7 @@ class WaylandToplevelWindow : public WaylandWindow,
   // PlatformWindow
   void Show(bool inactive) override;
   void Hide() override;
+  void SetAppId(const std::string& app_id) override;
   bool IsVisible() const override;
   void SetTitle(const base::string16& title) override;
   void ToggleFullscreen() override;

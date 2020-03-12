@@ -41,6 +41,7 @@ bool OverlayStackOrderCompare(
 #include "ui/ozone/platform/wayland/host/surface_group_compositor_wrapper.h"
 #include "ui/ozone/platform/wayland/host/surface_group_wrapper.h"
 #include "ui/ozone/platform/wayland/host/wayland_extension.h"
+#include "ui/ozone/platform/wayland/host/wayland_output.h"
 #include "ui/ozone/platform/wayland/host/wayland_input_method_context.h"
 ///@}
 
@@ -155,6 +156,8 @@ gfx::Rect WaylandWindow::GetBounds() {
 
 void WaylandWindow::SetTitle(const base::string16& title) {}
 
+void WaylandWindow::SetAppId(const std::string& title) {}
+
 void WaylandWindow::SetCapture() {
   // Wayland doesn't allow explicit grabs. Instead, it sends events to "entered"
   // windows. That is, if user enters their mouse pointer to a window, that
@@ -260,6 +263,68 @@ void WaylandWindow::SizeConstraintsChanged() {}
 void WaylandWindow::SetSurfaceId(int surface_id) {
   NOTREACHED() << "WaylandWindow gets the surface id from the "
     "PlatformWindowInitProperties passed to ::Initialize method";
+}
+
+void
+WaylandWindow::SetAglPanel(int edge)
+{
+  WaylandOutputManager *wayland_manager = connection_->wayland_output_manager();
+  WaylandOutput *output = wayland_manager->GetPrimaryOutput();
+
+  if (!connection_->agl_shell_manager) {
+      return;
+  }
+
+  connection_->agl_shell_manager->setPanel(this, output, edge);
+}
+
+void
+WaylandWindow::SetAglActivateApp(std::string app)
+{
+	WaylandOutputManager *wayland_manager = connection_->wayland_output_manager();
+	WaylandOutput *output = wayland_manager->GetPrimaryOutput();
+
+    if (!connection_->agl_shell_manager) {
+        return;
+    }
+
+	connection_->agl_shell_manager->activateApp(app.c_str(), output);
+	/* force a flush to send it, otherwise the request is not be sent */
+	connection_->ScheduleFlush();
+}
+
+void
+WaylandWindow::SetAglBackground(void)
+{
+  WaylandOutputManager *wayland_manager = connection_->wayland_output_manager();
+  WaylandOutput *output = wayland_manager->GetPrimaryOutput();
+
+  if (!connection_->agl_shell_manager) {
+      return;
+  }
+
+  connection_->agl_shell_manager->setBackGround(this, output);
+}
+
+void
+WaylandWindow::SetAglReady(void)
+{
+  if (!connection_->agl_shell_manager) {
+      return;
+  }
+
+  // Delay activation to ensure that all the setup is done
+  // TODO(rzanoni): find a more deterministic way of doing this
+  set_ready_timer_.Start(FROM_HERE,
+                         base::TimeDelta::FromMilliseconds(500),
+                         this,
+                         &WaylandWindow::SetReadyCallback);
+}
+
+
+void WaylandWindow::SetReadyCallback() {
+    connection_->agl_shell_manager->ready();
+    connection_->ScheduleFlush();
 }
 
 bool WaylandWindow::CanDispatchEvent(const PlatformEvent& event) {

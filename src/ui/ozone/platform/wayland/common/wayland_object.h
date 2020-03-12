@@ -5,6 +5,8 @@
 #ifndef UI_OZONE_PLATFORM_WAYLAND_COMMON_WAYLAND_OBJECT_H_
 #define UI_OZONE_PLATFORM_WAYLAND_COMMON_WAYLAND_OBJECT_H_
 
+#include <agl-shell-client-protocol.h>
+#include <agl-shell-desktop-client-protocol.h>
 #include <memory>
 
 #include "ui/ozone/platform/wayland/common/wayland.h"
@@ -77,6 +79,18 @@ template <>
 struct ObjectTraits<zxdg_toplevel_decoration_v1> {
   static const wl_interface* interface;
   static void (*deleter)(zxdg_toplevel_decoration_v1*);
+};
+
+template <>
+struct ObjectTraits<agl_shell> {
+  static const wl_interface* interface;
+  static void (*deleter)(agl_shell*);
+};
+
+template <>
+struct ObjectTraits<agl_shell_desktop> {
+  static const wl_interface* interface;
+  static void (*deleter)(agl_shell_desktop*);
 };
 
 template <>

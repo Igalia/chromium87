@@ -6,12 +6,15 @@
 
 #include <aura-shell-client-protocol.h>
 
+#include "base/command_line.h"
+#include "base/strings/utf_string_conversions.h"
 #include "base/run_loop.h"
 #include "base/unguessable_token.h"
 #include "build/chromeos_buildflags.h"
 #include "ui/base/dragdrop/drag_drop_types.h"
 #include "ui/base/dragdrop/os_exchange_data.h"
 #include "ui/base/hit_test.h"
+#include "ui/base/ui_base_switches.h"
 #include "ui/gfx/native_widget_types.h"
 #include "ui/ozone/platform/wayland/host/shell_object_factory.h"
 #include "ui/ozone/platform/wayland/host/shell_surface_wrapper.h"
@@ -69,6 +72,13 @@ bool WaylandToplevelWindow::CreateShellSurface() {
   SetSizeConstraints();
   TriggerStateChanges();
   return true;
+}
+
+void WaylandToplevelWindow::SetAppId(const std::string& app_id) {
+  DCHECK(shell_surface_);
+  wm_class_class_ = app_id;
+  shell_surface_->SetAppId(app_id);
+  connection()->ScheduleFlush();
 }
 
 void WaylandToplevelWindow::ApplyPendingBounds() {
@@ -404,6 +414,14 @@ bool WaylandToplevelWindow::OnInitialize(
       std::string(crosapi::kLacrosAppIdPrefix) + token.ToString();
 #else
   wm_class_class_ = properties.wm_class_class;
+
+  base::CommandLine* command_line = base::CommandLine::ForCurrentProcess();
+  if (command_line->HasSwitch(switches::kAglAppId)) {
+      auto app_id = command_line->GetSwitchValueASCII(switches::kAglAppId);
+      wm_class_class_ = app_id;
+      shell_surface_->SetAppId(wm_class_class_);
+      LOG(INFO) << "App id: " << wm_class_class_;
+  }
 #endif
   SetWaylandExtension(this, static_cast<WaylandExtension*>(this));
   SetWmMoveLoopHandler(this, static_cast<WmMoveLoopHandler*>(this));

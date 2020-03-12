@@ -36,6 +36,7 @@ class STUB_WINDOW_EXPORT StubWindow : public PlatformWindow {
   void SetBounds(const gfx::Rect& bounds) override;
   gfx::Rect GetBounds() override;
   void SetTitle(const base::string16& title) override;
+  void SetAppId(const std::string& title) override;
   void SetCapture() override;
   void ReleaseCapture() override;
   void ToggleFullscreen() override;
@@ -57,7 +58,10 @@ class STUB_WINDOW_EXPORT StubWindow : public PlatformWindow {
                       const gfx::ImageSkia& app_icon) override;
   void SizeConstraintsChanged() override;
   void SetSurfaceId(int surface_id) override;
-
+  void SetAglBackground() override;
+  void SetAglPanel(int edge) override;
+  void SetAglReady() override;
+  void SetAglActivateApp(std::string app) override;
   PlatformWindowDelegate* delegate_;
   gfx::Rect bounds_;
 

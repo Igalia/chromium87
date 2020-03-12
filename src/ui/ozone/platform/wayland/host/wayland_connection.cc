@@ -4,6 +4,8 @@
 
 #include "ui/ozone/platform/wayland/host/wayland_connection.h"
 
+#include <agl-shell-client-protocol.h>
+#include <agl-shell-desktop-client-protocol.h>
 #include <xdg-shell-client-protocol.h>
 #include <xdg-shell-unstable-v6-client-protocol.h>
 
@@ -12,11 +14,14 @@
 #include <vector>
 
 #include "base/bind.h"
+#include "base/command_line.h"
 #include "base/logging.h"
 #include "base/memory/ptr_util.h"
+#include "base/strings/string_number_conversions.h"
 #include "base/strings/string_util.h"
 #include "base/task/current_thread.h"
 #include "base/threading/thread_task_runner_handle.h"
+#include "ui/base/ui_base_switches.h"
 #include "ui/events/ozone/layout/keyboard_layout_engine_manager.h"
 #include "ui/gfx/geometry/point.h"
 #include "ui/ozone/platform/wayland/common/wayland_object.h"
@@ -82,7 +87,10 @@ constexpr uint32_t kMaxXdgDecorationVersion = 1;
 
 WaylandConnection::WaylandConnection() = default;
 
-WaylandConnection::~WaylandConnection() = default;
+WaylandConnection::~WaylandConnection() {
+  delete agl_shell_manager;
+  delete agl_shell_desktop_manager;
+}
 
 bool WaylandConnection::Initialize() {
 #if defined(USE_LIBWAYLAND_STUBS)
@@ -110,6 +118,8 @@ bool WaylandConnection::Initialize() {
     LOG(ERROR) << "Failed to connect to Wayland display";
     return false;
   }
+
+  LOG(INFO) << "Got the wayland display";
 
   registry_.reset(wl_display_get_registry(display_.get()));
   if (!registry_) {
@@ -322,6 +332,22 @@ void WaylandConnection::Global(void* data,
 
   WaylandConnection* connection = static_cast<WaylandConnection*>(data);
 
+  base::CommandLine* command_line = base::CommandLine::ForCurrentProcess();
+
+  // kAglAppId is used only for setting the app_id when launching chrome
+  // webapps get their app_id from the config files
+  bool has_app_id = command_line->HasSwitch(switches::kAglAppId);
+
+  // Only one wayland client can bind to agl_shell. This should only be
+  // activated if web applications are implementing the homescreen and
+  // launcher.
+  bool is_agl_shell = command_line->HasSwitch(switches::kIsAglShell);
+
+  static const struct agl_shell_desktop_listener agl_shell_desktop_listener = {
+    AglDesktopAppIdEvent,
+    AglDesktopAppStateEvent,
+  };
+
   ///@name USE_NEVA_APPRUNTIME
   ///@{
   if (connection->extension_->Bind(registry, name, interface, version)) {
@@ -466,6 +492,29 @@ void WaylandConnection::Global(void* data,
     // CreateKeyboard may fail if we do not have keyboard seat capabilities yet.
     // We will create the keyboard when get them in that case.
     connection->CreateKeyboard();
+  } else if (is_agl_shell && !connection->agl_shell_ && (strcmp(interface, "agl_shell") == 0)) {
+    LOG(INFO) << "Found agl_shell extension";
+    connection->agl_shell_ = wl::Bind<agl_shell>(registry, name, 1);
+
+    if (!connection->agl_shell_) {
+        LOG(ERROR) << "Failed to bind to agl_shell global";
+        return;
+    }
+    connection->agl_shell_manager = new AglShell(connection);
+  } else if (has_app_id && !connection->agl_shell_desktop_ && (strcmp(interface, "agl_shell_desktop") == 0)) {
+    LOG(INFO) << "Found agl_shell_desktop extension";
+    connection->agl_shell_desktop_ = wl::Bind<agl_shell_desktop>(registry, name, 1);
+
+    if (!connection->agl_shell_desktop_) {
+        LOG(ERROR) << "Failed to bind to agl_shell_desktop global";
+        return;
+    }
+
+    agl_shell_desktop_add_listener(connection->agl_shell_desktop_.get(),
+                                   &agl_shell_desktop_listener, connection);
+
+    std::string app_id = command_line->GetSwitchValueASCII(switches::kAglAppId);
+    connection->agl_shell_desktop_manager = new AglShellDesktop(connection, app_id);
   } else if (!connection->text_input_manager_v1_ &&
              strcmp(interface, "zwp_text_input_manager_v1") == 0) {
     connection->text_input_manager_v1_ = wl::Bind<zwp_text_input_manager_v1>(
@@ -548,6 +597,21 @@ void WaylandConnection::Ping(void* data, xdg_wm_base* shell, uint32_t serial) {
   WaylandConnection* connection = static_cast<WaylandConnection*>(data);
   xdg_wm_base_pong(shell, serial);
   connection->ScheduleFlush();
+}
+
+// static
+void WaylandConnection::AglDesktopAppIdEvent(void *data, struct agl_shell_desktop *agl_shell_desktop,
+                          const char *app_id)
+{
+    LOG(INFO) << "agl_shell_desktop appid event, app_id: " << app_id;
+}
+
+// static
+void WaylandConnection::AglDesktopAppStateEvent(void *data, struct agl_shell_desktop *agl_shell_desktop,
+                             const char *app_id, const char *app_data,
+                             uint32_t app_state, uint32_t app_role)
+{
+    LOG(INFO) << "agl_shell_desktop appstate event, app_id: " << app_id << " state: " << app_state;
 }
 
 }  // namespace ui

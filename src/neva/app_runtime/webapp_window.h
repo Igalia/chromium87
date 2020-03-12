@@ -62,6 +62,9 @@ class WebAppWindow : public views::NativeEventDelegate,
     ui::WindowShowState show_state = ui::SHOW_STATE_DEFAULT;
     content::WebContents* web_contents = nullptr;
     gfx::LocationHint location_hint = gfx::LocationHint::kUnknown;
+    int pending_agl_edge_ = -1;
+    bool pending_agl_background_ = false;
+    bool pending_agl_ready_ = false;
   };
   WebAppWindow(const CreateParams& params, WebAppWindowDelegate* delegate, int surface_id);
   WebAppWindow(const WebAppWindow&) = delete;
@@ -85,6 +88,7 @@ class WebAppWindow : public views::NativeEventDelegate,
   void SetKeyMask(ui::KeyMask key_mask, bool set);
   void SetOpacity(float opacity);
   void SetWindowTitle(const base::string16& title);
+  void SetAglAppId(const std::string& title);
   void SetBounds(int x, int y, int width, int height);
   void SetCustomCursor(CustomCursorType type,
                        const std::string& path,
@@ -93,6 +97,10 @@ class WebAppWindow : public views::NativeEventDelegate,
   void SetWindowProperty(const std::string& name, const std::string& value);
   void SetWindowSurfaceId(int surface_id);
   void SetLocationHint(gfx::LocationHint value);
+  void SetAglBackground(void);
+  void SetAglReady(void);
+  void SetAglPanel(int edge);
+  void SetAglActivateApp(std::string app);
   void Show();
   void Minimize();
   void Close();
@@ -210,6 +218,7 @@ class WebAppWindow : public views::NativeEventDelegate,
   int current_rotation_ = -1;
 
   base::string16 title_;
+  std::string app_id_;
 
   // webOS specifics related to wl_webos_shell_surface interface
   ui::WidgetState window_host_state_;
