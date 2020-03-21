@@ -34,6 +34,7 @@ class WaylandOutput {
   void Initialize(Delegate* delegate);
 
   uint32_t output_id() const { return output_id_; }
+  wl_output *output() const { return output_.get(); }
   bool has_output(wl_output* output) const { return output_.get() == output; }
   int32_t scale_factor() const { return scale_factor_; }
   gfx::Rect bounds() const { return rect_in_physical_pixels_; }
@@ -44,6 +45,7 @@ class WaylandOutput {
 
  private:
   static constexpr int32_t kDefaultScaleFactor = 1;
+  static bool ShouldSwapAxis(int32_t wayland_transform);
 
   void TriggerDelegateNotifications() const;
 
@@ -75,6 +77,7 @@ class WaylandOutput {
   wl::Object<wl_output> output_;
   int32_t scale_factor_ = kDefaultScaleFactor;
   gfx::Rect rect_in_physical_pixels_;
+  bool swap_axis = false;
 
   Delegate* delegate_ = nullptr;
 
