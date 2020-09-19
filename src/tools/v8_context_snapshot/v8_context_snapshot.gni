@@ -19,7 +19,7 @@ declare_args() {
       !is_chromeos && !is_android && !is_chromecast && !is_fuchsia &&
       !(host_os == "mac" && current_cpu == "x86") &&
       (v8_target_cpu == target_cpu || is_msan) &&
-      !(is_win && host_os != "win") && !is_webos
+      !(is_win && host_os != "win") && !is_webos && !is_agl
 
   # We use a different filename for arm64 macOS builds so that the arm64 and
   # x64 snapshots can live side-by-side in a universal macOS app.
