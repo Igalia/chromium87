@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 
+#include <ivi-application-client-protocol.h>
+
 #include "third_party/skia/include/core/SkBitmap.h"
 #include "ui/events/event.h"
 #include "ui/ozone/platform/wayland/common/wayland_object.h"
@@ -78,6 +80,7 @@ class WaylandConnection {
   xdg_wm_base* shell() const { return shell_.get(); }
   zxdg_shell_v6* shell_v6() const { return shell_v6_.get(); }
   zaura_shell* aura_shell() const { return aura_shell_.get(); }
+  ivi_application* ivi_shell() const { return ivi_application_; }
 #if !defined(USE_NEVA_APPRUNTIME)
   wl_seat* seat() const { return seat_.get(); }
 #endif  // !defined(USE_NEVA_APPRUNTIME)
@@ -262,6 +265,8 @@ class WaylandConnection {
 #endif  // !defined(USE_NEVA_APPRUNTIME)
   wl::Object<xdg_wm_base> shell_;
   wl::Object<zxdg_shell_v6> shell_v6_;
+  // TODO(msisov): use wl::Object.
+  ivi_application* ivi_application_ = nullptr;
   wl::Object<wp_presentation> presentation_;
   wl::Object<wp_viewporter> viewporter_;
   wl::Object<zcr_keyboard_extension_v1> keyboard_extension_v1_;
