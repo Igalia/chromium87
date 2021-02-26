@@ -57,7 +57,6 @@
 #include "services/network/public/cpp/ip_address_space_util.h"
 #include "services/network/public/cpp/net_adapters.h"
 #include "services/network/public/cpp/network_switches.h"
-#include "services/network/public/cpp/neva/cors_corb_exception.h"
 #include "services/network/public/cpp/origin_policy.h"
 #include "services/network/public/cpp/parsed_headers.h"
 #include "services/network/public/cpp/resource_request.h"
@@ -71,6 +70,10 @@
 #include "services/network/throttling/scoped_throttling_token.h"
 #include "services/network/trust_tokens/operation_timing_request_helper_wrapper.h"
 #include "services/network/trust_tokens/trust_token_request_helper.h"
+
+#if defined(OS_WEBOS)
+#include "services/network/public/cpp/neva/cors_corb_exception.h"
+#endif
 
 namespace network {
 
@@ -590,9 +593,11 @@ URLLoader::URLLoader(
       CrossOriginReadBlockingExceptionForPlugin::ShouldAllowForPlugin(
           factory_params_->process_id);
 
+#if defined(OS_WEBOS)
   if (neva::CorsCorbException::ShouldAllowExceptionForProcess(GetProcessId())) {
     is_nocors_corb_excluded_request_ = true;
   }
+#endif
 
   request_mode_ = request.mode;
 
