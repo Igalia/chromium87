@@ -128,6 +128,8 @@ class VIEWS_EXPORT DesktopWindowTreeHostPlatform
   void OnWindowExposed() override;
   void OnWindowStateAboutToChange(ui::PlatformWindowState state) override;
   void OnCursorVisibilityChanged(bool visible) override;
+  void BeginPrepareStackForWebApp() override;
+  void FinishPrepareStackForWebApp() override;
   ///@}
   void OnWindowStateChanged(ui::PlatformWindowState new_state) override;
   void OnCloseRequest() override;
