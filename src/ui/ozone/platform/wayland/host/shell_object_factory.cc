@@ -12,7 +12,7 @@
 
 ///@name USE_NEVA_APPRUNTIME
 ///@{
-#include "ui/ozone/platform/wayland/host/wayland_extension.h"
+#include "ui/ozone/platform/wayland/host/wayland_extension_neva.h"
 ///@}
 
 namespace ui {

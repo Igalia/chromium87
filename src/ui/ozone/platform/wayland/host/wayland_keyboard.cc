@@ -105,13 +105,11 @@ void WaylandKeyboard::Enter(void* data,
   if (auto* window = wl::RootWindowFromWlSurface(surface)) {
     auto* self = static_cast<WaylandKeyboard*>(data);
     self->delegate_->OnKeyboardFocusChanged(window, /*focused=*/true);
-  }
-
-  ///@name USE_NEVA_APPRUNTIME
-  ///@{
-  if (auto* window = WaylandWindow::FromSurface(surface))
+    ///@name USE_NEVA_APPRUNTIME
+    ///@{
     window->HandleKeyboardEnter();
-  ///@}
+    ///@}
+  }
 }
 
 void WaylandKeyboard::Leave(void* data,
@@ -128,7 +126,7 @@ void WaylandKeyboard::Leave(void* data,
 
   ///@name USE_NEVA_APPRUNTIME
   ///@{
-  if (auto* window = WaylandWindow::FromSurface(surface))
+  if (auto* window = wl::RootWindowFromWlSurface(surface))
     window->HandleKeyboardLeave();
   ///@}
 }

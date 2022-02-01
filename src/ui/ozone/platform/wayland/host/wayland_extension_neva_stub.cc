@@ -14,7 +14,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include "ui/ozone/platform/wayland/host/wayland_extension.h"
+#include "ui/ozone/platform/wayland/host/wayland_extension_neva.h"
 
 #include "ui/ozone/platform/wayland/host/extended_input_wrapper.h"
 #include "ui/ozone/platform/wayland/host/input_manager_wrapper.h"
@@ -28,12 +28,12 @@ namespace ui {
 namespace {
 
 // A stub class to provide an empty Wayland extension object (if none is used).
-class StubWaylandExtension : public WaylandExtension {
+class StubWaylandExtensionNeva : public WaylandExtensionNeva {
  public:
-  StubWaylandExtension() = default;
-  ~StubWaylandExtension() override = default;
+  StubWaylandExtensionNeva() = default;
+  ~StubWaylandExtensionNeva() override = default;
 
-  // ui::WaylandExtension:
+  // ui::WaylandExtensionNeva:
   bool Bind(wl_registry* registry,
             uint32_t name,
             const char* interface,
@@ -63,15 +63,15 @@ class StubWaylandExtension : public WaylandExtension {
     return nullptr;
   }
 
-  StubWaylandExtension(const StubWaylandExtension&) = delete;
-  StubWaylandExtension& operator=(const StubWaylandExtension&) = delete;
+  StubWaylandExtensionNeva(const StubWaylandExtensionNeva&) = delete;
+  StubWaylandExtensionNeva& operator=(const StubWaylandExtensionNeva&) = delete;
 };
 
 }  // namespace
 
-std::unique_ptr<WaylandExtension> CreateWaylandExtension(
+std::unique_ptr<WaylandExtensionNeva> CreateWaylandExtensionNeva(
     WaylandConnection* connection) {
-  return std::make_unique<StubWaylandExtension>();
+  return std::make_unique<StubWaylandExtensionNeva>();
 }
 
 }  // namespace ui

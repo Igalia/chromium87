@@ -44,6 +44,21 @@ void WaylandSeat::Initialize(WaylandSeatManager* seat_manager) {
   wl_seat_add_listener(seat_.get(), &seat_listener, this);
 }
 
+bool WaylandSeat::CreateKeyboard() {
+  wl_keyboard* keyboard = wl_seat_get_keyboard(seat_.get());
+  if (!keyboard)
+    return false;
+
+  auto* layout_engine = KeyboardLayoutEngineManager::GetKeyboardLayoutEngine();
+  // Make sure to destroy the old WaylandKeyboard (if it exists) before creating
+  // the new one.
+  keyboard_.reset();
+  keyboard_.reset(new WaylandKeyboard(
+      keyboard, seat_manager_->connection()->keyboard_extension_v1(), seat_manager_->connection(),
+      layout_engine, seat_manager_->connection()->event_source()));
+  return true;
+}
+
 void WaylandSeat::UpdateInputDevices(wl_seat* seat,
                                      std::uint32_t capabilities) {
   DCHECK(seat);
@@ -69,14 +84,8 @@ void WaylandSeat::UpdateInputDevices(wl_seat* seat,
 
   if (!has_keyboard) {
     keyboard_.reset();
-  } else if (wl_keyboard* keyboard = wl_seat_get_keyboard(seat)) {
-    auto* layout_engine =
-        KeyboardLayoutEngineManager::GetKeyboardLayoutEngine();
-    keyboard_ = std::make_unique<WaylandKeyboard>(
-        keyboard, seat_manager_->connection(), layout_engine,
-        seat_manager_->connection()->event_source());
-  } else {
-    LOG(ERROR) << "Failed to get wl_keyboard from seat";
+  } else if (!CreateKeyboard()) {
+    LOG(ERROR) << "Failed to create WaylandKeyboard";
   }
 
   if (!has_touch) {

@@ -40,7 +40,7 @@ bool OverlayStackOrderCompare(
 #include "ui/ozone/platform/wayland/host/input_panel_manager.h"
 #include "ui/ozone/platform/wayland/host/surface_group_compositor_wrapper.h"
 #include "ui/ozone/platform/wayland/host/surface_group_wrapper.h"
-#include "ui/ozone/platform/wayland/host/wayland_extension.h"
+#include "ui/ozone/platform/wayland/host/wayland_extension_neva.h"
 #include "ui/ozone/platform/wayland/host/wayland_output.h"
 #include "ui/ozone/platform/wayland/host/wayland_input_method_context.h"
 ///@}

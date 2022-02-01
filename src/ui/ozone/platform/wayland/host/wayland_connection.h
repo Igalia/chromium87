@@ -51,7 +51,7 @@ class XdgForeignWrapper;
 
 ///@name USE_NEVA_APPRUNTIME
 ///@{
-class WaylandExtension;
+class WaylandExtensionNeva;
 ///@}
 
 class WaylandConnection {
@@ -87,6 +87,9 @@ class WaylandConnection {
   ivi_application* ivi_shell() const { return ivi_application_; }
   agl_shell *ashell() const { return agl_shell_.get(); }
   agl_shell_desktop *ashell_desktop() const { return agl_shell_desktop_.get(); }
+  zcr_keyboard_extension_v1* keyboard_extension_v1() const {
+    return keyboard_extension_v1_.get();
+  }
 #if !defined(USE_NEVA_APPRUNTIME)
   wl_seat* seat() const { return seat_.get(); }
 #endif  // !defined(USE_NEVA_APPRUNTIME)
@@ -189,7 +192,7 @@ class WaylandConnection {
 
   ///@name USE_NEVA_APPRUNTIME
   ///@{
-  WaylandExtension* extension() { return extension_.get(); }
+  WaylandExtensionNeva* extension() { return extension_.get(); }
   ///@}
 
   WaylandZwpLinuxDmabuf* zwp_dmabuf() const { return zwp_dmabuf_.get(); }
@@ -240,9 +243,11 @@ class WaylandConnection {
   // in place, i.e: wl_seat and wl_data_device_manager.
   void CreateDataObjectsIfReady();
 
+#if !defined(USE_NEVA_APPRUNTIME)
   // Creates WaylandKeyboard with the currently acquired protocol objects, if
   // possible. Returns true iff WaylandKeyboard was created.
   bool CreateKeyboard();
+#endif
 
   // wl_registry_listener
   static void Global(void* data,
@@ -324,7 +329,7 @@ class WaylandConnection {
 
   ///@name USE_NEVA_APPRUNTIME
   ///@{
-  std::unique_ptr<WaylandExtension> extension_;
+  std::unique_ptr<WaylandExtensionNeva> extension_;
   ///@}
 
   std::unique_ptr<GtkPrimarySelectionDeviceManager>

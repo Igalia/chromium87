@@ -25,11 +25,11 @@
 #include "ui/ozone/platform/wayland/extensions/webos/host/webos_input_panel_manager.h"
 #include "ui/ozone/platform/wayland/extensions/webos/host/webos_surface_group_compositor_wrapper.h"
 #include "ui/ozone/platform/wayland/extensions/webos/host/webos_text_model_factory_wrapper.h"
-#include "ui/ozone/platform/wayland/host/wayland_extension.h"
+#include "ui/ozone/platform/wayland/host/wayland_extension_neva.h"
 
 namespace ui {
 
-class WaylandWebosExtension : public WaylandExtension {
+class WaylandWebosExtension : public WaylandExtensionNeva {
  public:
   explicit WaylandWebosExtension(WaylandConnection* connection);
   WaylandWebosExtension(const WaylandWebosExtension&) = delete;

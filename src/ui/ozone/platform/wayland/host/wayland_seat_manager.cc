@@ -47,6 +47,11 @@ WaylandSeat* WaylandSeatManager::GetFirstSeat() const {
   return nullptr;
 }
 
+void WaylandSeatManager::CreateKeyboard() {
+  for (auto& seat : seat_list_)
+    seat->CreateKeyboard();
+}
+
 WaylandSeatManager::SeatList::const_iterator
 WaylandSeatManager::GetSeatIteratorById(std::uint32_t seat_id) const {
   return std::find_if(

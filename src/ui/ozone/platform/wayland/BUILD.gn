@@ -256,8 +256,8 @@ source_set("wayland") {
     "host/input_panel_manager.h",
     "host/surface_group_compositor_wrapper.h",
     "host/surface_group_wrapper.h",
-    "host/wayland_extension.h",
-    "host/wayland_extension_stub.cc",
+    "host/wayland_extension_neva.h",
+    "host/wayland_extension_neva_stub.cc",
   ]
 
   if (is_webos) {

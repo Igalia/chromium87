@@ -61,7 +61,7 @@
 
 ///@name USE_NEVA_APPRUNTIME
 ///@{
-#include "ui/ozone/platform/wayland/host/wayland_extension.h"
+#include "ui/ozone/platform/wayland/host/wayland_extension_neva.h"
 ///@}
 
 namespace ui {
@@ -130,7 +130,7 @@ bool WaylandConnection::Initialize() {
   ///@name USE_NEVA_APPRUNTIME
   ///@{
   if (!extension_) {
-    extension_ = CreateWaylandExtension(this);
+    extension_ = CreateWaylandExtensionNeva(this);
   }
   ///@}
 
@@ -273,12 +273,9 @@ void WaylandConnection::UpdateInputDevices(wl_seat* seat,
 }
 #endif  // !defined(USE_NEVA_APPRUNTIME)
 
+#if !defined(USE_NEVA_APPRUNTIME)
 bool WaylandConnection::CreateKeyboard() {
-#if defined(USE_NEVA_APPRUNTIME)
-  wl_keyboard* keyboard = wl_seat_get_keyboard(seat());
-#else  // defined(USE_NEVA_APPRUNTIME)
   wl_keyboard* keyboard = wl_seat_get_keyboard(seat_.get());
-#endif  // !defined(USE_NEVA_APPRUNTIME)
   if (!keyboard)
     return false;
 
@@ -290,6 +287,7 @@ bool WaylandConnection::CreateKeyboard() {
                                       this, layout_engine, event_source()));
   return true;
 }
+#endif  // !defined(USE_NEVA_APPRUNTIME)
 
 void WaylandConnection::CreateDataObjectsIfReady() {
 #if defined(USE_NEVA_APPRUNTIME)
@@ -491,7 +489,12 @@ void WaylandConnection::Global(void* data,
     }
     // CreateKeyboard may fail if we do not have keyboard seat capabilities yet.
     // We will create the keyboard when get them in that case.
+#if defined(USE_NEVA_APPRUNTIME)
+    if (connection->seat_manager_)
+      connection->seat_manager_->CreateKeyboard();
+#else   // defined(USE_NEVA_APPRUNTIME)
     connection->CreateKeyboard();
+#endif  // !defined(USE_NEVA_APPRUNTIME)
   } else if (is_agl_shell && !connection->agl_shell_ && (strcmp(interface, "agl_shell") == 0)) {
     LOG(INFO) << "Found agl_shell extension";
     connection->agl_shell_ = wl::Bind<agl_shell>(registry, name, 1);

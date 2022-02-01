@@ -52,6 +52,10 @@ class WaylandSeat {
   WaylandSeat(const WaylandSeat&) = delete;
   WaylandSeat& operator=(const WaylandSeat&) = delete;
 
+  // Creates WaylandKeyboard with the currently acquired protocol objects, if
+  // possible. Returns true if WaylandKeyboard was created.
+  bool CreateKeyboard();
+
  private:
   void UpdateInputDevices(wl_seat* seat, std::uint32_t capabilities);
 

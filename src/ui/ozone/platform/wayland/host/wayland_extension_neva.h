@@ -14,8 +14,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#ifndef UI_OZONE_PLATFORM_WAYLAND_HOST_WAYLAND_EXTENSION_H_
-#define UI_OZONE_PLATFORM_WAYLAND_HOST_WAYLAND_EXTENSION_H_
+#ifndef UI_OZONE_PLATFORM_WAYLAND_HOST_WAYLAND_EXTENSION_NEVA_H_
+#define UI_OZONE_PLATFORM_WAYLAND_HOST_WAYLAND_EXTENSION_NEVA_H_
 
 #include <memory>
 
@@ -34,10 +34,10 @@ class WaylandWindow;
 
 // Wayland extension abstract interface to support extending of the Wayland
 // protocol. Inherit it to provide your own Wayland extension implementation.
-class WaylandExtension {
+class WaylandExtensionNeva {
  public:
-  WaylandExtension() = default;
-  virtual ~WaylandExtension() = default;
+  WaylandExtensionNeva() = default;
+  virtual ~WaylandExtensionNeva() = default;
 
   // Binds to the extension interface(s). Can encapsulate binding of several
   // interfaces, defined by |interface|.
@@ -69,14 +69,14 @@ class WaylandExtension {
   // Returns surface group compositor wrapper object.
   virtual SurfaceGroupCompositorWrapper* GetSurfaceGroupCompositor() = 0;
 
-  WaylandExtension(const WaylandExtension&) = delete;
-  WaylandExtension& operator=(const WaylandExtension&) = delete;
+  WaylandExtensionNeva(const WaylandExtensionNeva&) = delete;
+  WaylandExtensionNeva& operator=(const WaylandExtensionNeva&) = delete;
 };
 
 // Creates Wayland extension.
-std::unique_ptr<WaylandExtension> CreateWaylandExtension(
+std::unique_ptr<WaylandExtensionNeva> CreateWaylandExtensionNeva(
     WaylandConnection* connection);
 
 }  // namespace ui
 
-#endif  // UI_OZONE_PLATFORM_WAYLAND_HOST_WAYLAND_EXTENSION_H_
+#endif  // UI_OZONE_PLATFORM_WAYLAND_HOST_WAYLAND_EXTENSION_NEVA_H_

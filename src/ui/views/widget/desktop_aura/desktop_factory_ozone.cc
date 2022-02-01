@@ -4,6 +4,7 @@
 
 #include "ui/views/widget/desktop_aura/desktop_factory_ozone.h"
 
+#include "base/check.h"
 #include "base/logging.h"
 
 #if defined(USE_OZONE) && defined(OZONE_PLATFORM_WAYLAND_EXTERNAL)

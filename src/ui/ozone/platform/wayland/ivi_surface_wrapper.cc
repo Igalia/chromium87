@@ -33,7 +33,7 @@ bool IviSurfaceWrapper::Initialize(bool with_toplevel) {
   }
 
   ivi_surface_ = ivi_application_surface_create(wayland_window_->connection()->ivi_shell(),
-                                                surface_id, wayland_window_->surface());
+                                                surface_id, wayland_window_->root_surface()->surface());
   DCHECK(ivi_surface_);
   ivi_surface_add_listener(ivi_surface_, &ivi_surface_listener, this);
   return true;

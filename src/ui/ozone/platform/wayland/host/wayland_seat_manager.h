@@ -44,6 +44,9 @@ class WaylandSeatManager {
   WaylandSeatManager(const WaylandSeatManager&) = delete;
   WaylandSeatManager& operator=(const WaylandSeatManager&) = delete;
 
+  // Resets keyboard for all seats within the storage.
+  void CreateKeyboard();
+
  private:
   using SeatList = std::vector<std::unique_ptr<WaylandSeat>>;
   SeatList::const_iterator GetSeatIteratorById(std::uint32_t seat_id) const;

@@ -168,7 +168,7 @@ WaylandWebosExtension::GetSurfaceGroupCompositor() {
   return surface_group_compositor_.get();
 }
 
-std::unique_ptr<WaylandExtension> CreateWaylandExtension(
+std::unique_ptr<WaylandExtensionNeva> CreateWaylandExtensionNeva(
     WaylandConnection* connection) {
   return std::make_unique<WaylandWebosExtension>(connection);
 }
