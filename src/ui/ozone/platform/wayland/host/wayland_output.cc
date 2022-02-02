@@ -29,11 +29,16 @@ void WaylandOutput::Initialize(Delegate* delegate) {
   wl_output_add_listener(output_.get(), &output_listener, this);
 }
 
+gfx::Rect WaylandOutput::GetBounds() const {
+  gfx::Rect transformed_rect = rect_in_physical_pixels_;
+  if (swap_axis_)
+    transformed_rect.Transpose();
+  return transformed_rect;
+}
+
 void WaylandOutput::TriggerDelegateNotifications() const {
   DCHECK(!rect_in_physical_pixels_.IsEmpty());
-  gfx::Rect transformed_rect = rect_in_physical_pixels_;
-  transformed_rect.Transpose();
-  delegate_->OnOutputHandleMetrics(output_id_, transformed_rect,
+  delegate_->OnOutputHandleMetrics(output_id_, GetBounds(),
                                    scale_factor_);
 }
 
@@ -62,8 +67,10 @@ void WaylandOutput::OutputHandleGeometry(void* data,
                                          const char* model,
                                          int32_t output_transform) {
   WaylandOutput* wayland_output = static_cast<WaylandOutput*>(data);
-  if (wayland_output)
+  if (wayland_output) {
     wayland_output->rect_in_physical_pixels_.set_origin(gfx::Point(x, y));
+    wayland_output->swap_axis_ = ShouldSwapAxis(output_transform);
+  }
 }
 
 // static

@@ -37,7 +37,7 @@ class WaylandOutput {
   wl_output *output() const { return output_.get(); }
   bool has_output(wl_output* output) const { return output_.get() == output; }
   int32_t scale_factor() const { return scale_factor_; }
-  gfx::Rect bounds() const { return rect_in_physical_pixels_; }
+  gfx::Rect GetBounds() const;
 
   // Tells if the output has already received physical screen dimensions in the
   // global compositor space.
@@ -77,7 +77,7 @@ class WaylandOutput {
   wl::Object<wl_output> output_;
   int32_t scale_factor_ = kDefaultScaleFactor;
   gfx::Rect rect_in_physical_pixels_;
-  bool swap_axis = false;
+  bool swap_axis_ = false;
 
   Delegate* delegate_ = nullptr;
 
