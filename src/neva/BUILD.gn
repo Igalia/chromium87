@@ -48,6 +48,10 @@ config("config") {
     defines += [ "ENABLE_NETWORK_ERROR_PAGE_CONTROLLER_WEBAPI=1" ]
   }
 
+  if (enable_agl_appservice_webapi) {
+    defines += [ "ENABLE_AGL_APPSERVICE_WEBAPI=1" ]
+  }
+
   if (neva_dcheck_always_on) {
     defines += [ "NEVA_DCHECK_ALWAYS_ON=1" ]
   }

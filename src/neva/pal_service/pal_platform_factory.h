@@ -24,6 +24,7 @@
 
 namespace pal {
 
+class AppServiceDelegate;
 class MemoryManagerDelegate;
 class NetworkErrorPageControllerDelegate;
 class OSCryptDelegate;
@@ -32,6 +33,8 @@ class PlatformSystemDelegate;
 class COMPONENT_EXPORT(PAL_SERVICE) PlatformFactory {
  public:
   static PlatformFactory* Get();
+
+  std::unique_ptr<AppServiceDelegate> CreateAppServiceDelegate();
 
   std::unique_ptr<MemoryManagerDelegate> CreateMemoryManagerDelegate();
 

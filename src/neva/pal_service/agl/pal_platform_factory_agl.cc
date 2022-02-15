@@ -1,4 +1,4 @@
-// Copyright 2019 LG Electronics, Inc.
+// Copyright 2022 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@
 
 #include <memory>
 
-#include "neva/pal_service/appservice_delegate.h"
+#include "neva/pal_service/agl/appservice_delegate_agl.h"
+#include "neva/pal_service/agl/platform_system_delegate_agl.h"
 #include "neva/pal_service/memorymanager_delegate.h"
 #include "neva/pal_service/network_error_page_controller_delegate.h"
 #include "neva/pal_service/os_crypt_delegate.h"
-#include "neva/pal_service/pc/platform_system_delegate_pc.h"
 #include "neva/pal_service/system_servicebridge_delegate.h"
 
 namespace pal {
@@ -38,13 +38,14 @@ std::unique_ptr<OSCryptDelegate> PlatformFactory::CreateOSCryptDelegate() {
 
 std::unique_ptr<SystemServiceBridgeDelegate>
 PlatformFactory::CreateSystemServiceBridgeDelegate(
-  std::string, SystemServiceBridgeDelegate::Response) {
+    std::string,
+    SystemServiceBridgeDelegate::Response) {
   return std::unique_ptr<SystemServiceBridgeDelegate>();
 }
 
 std::unique_ptr<PlatformSystemDelegate>
 PlatformFactory::CreatePlatformSystemDelegate() {
-  return std::make_unique<pc::PlatformSystemDelegatePC>();
+  return std::make_unique<agl::PlatformSystemDelegateAGL>();
 }
 
 std::unique_ptr<NetworkErrorPageControllerDelegate>
@@ -54,7 +55,7 @@ PlatformFactory::CreateNetworkErrorPageControllerDelegate() {
 
 std::unique_ptr<AppServiceDelegate>
 PlatformFactory::CreateAppServiceDelegate() {
-  return std::unique_ptr<AppServiceDelegate>();
+  return std::make_unique<agl::AppServiceDelegateAGL>();
 }
 
 }  // namespace pal

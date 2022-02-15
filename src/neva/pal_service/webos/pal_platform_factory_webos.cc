@@ -18,6 +18,7 @@
 
 #include <memory>
 
+#include "neva/pal_service/appservice_delegate.h"
 #include "neva/pal_service/os_crypt_delegate.h"
 #include "neva/pal_service/webos/memorymanager_delegate_webos.h"
 #include "neva/pal_service/webos/network_error_page_controller_delegate_webos.h"
@@ -60,6 +61,11 @@ PlatformFactory::CreatePlatformSystemDelegate() {
 std::unique_ptr<NetworkErrorPageControllerDelegate>
 PlatformFactory::CreateNetworkErrorPageControllerDelegate() {
   return std::make_unique<webos::NetworkErrorPageControllerDelegateWebOS>();
+}
+
+std::unique_ptr<AppServiceDelegate>
+PlatformFactory::CreateAppServiceDelegate() {
+  return std::unique_ptr<AppServiceDelegate>();
 }
 
 }  // namespace pal
