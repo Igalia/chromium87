@@ -1,4 +1,4 @@
-# Copyright 2019 LG Electronics, Inc.
+# Copyright 2022 LG Electronics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,17 +14,22 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import("//mojo/public/tools/bindings/mojom.gni")
+import("//neva/neva.gni")
+import("//neva/pal_service/pal_service.gni")
 
-mojom("mojom") {
+source_set("pal_service_agl") {
   sources = [
-    "appservice.mojom",
-    "constants.mojom",
-    "memorymanager.mojom",
-    "network_error_page_controller.mojom",
-    "os_crypt.mojom",
-    "pal_service.mojom",
-    "sample.mojom",
-    "system_servicebridge.mojom",
+    "appservice_delegate_agl.cc",
+    "appservice_delegate_agl.h",
+    "pal_platform_factory_agl.cc",
+    "platform_system_delegate_agl.cc",
+    "platform_system_delegate_agl.h"
+  ]
+
+  defines = pal_service_defines
+
+  deps = [
+    "//base",
+    "//neva/pal_service/public/mojom",
   ]
 }

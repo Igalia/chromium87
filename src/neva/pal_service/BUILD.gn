@@ -20,6 +20,9 @@ import("//services/service_manager/public/cpp/service_executable.gni")
 
 component("pal_service") {
   sources = [
+    "appservice.cc",
+    "appservice.h",
+    "appservice_delegate.h",
     "memorymanager.cc",
     "memorymanager.h",
     "memorymanager_delegate.h",
@@ -66,6 +69,8 @@ component("pal_service") {
     deps += [
       "//neva/pal_service/webos:pal_service_webos",
     ]
+  } else if (is_agl) {
+    deps += [ "//neva/pal_service/agl:pal_service_agl" ]
   } else {
     deps += [
       "//neva/pal_service/pc:pal_service_pc",
