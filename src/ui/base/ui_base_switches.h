@@ -43,7 +43,7 @@ COMPONENT_EXPORT(UI_BASE) extern const char kDisallowNonExactResourceReuse[];
 COMPONENT_EXPORT(UI_BASE) extern const char kMangleLocalizedStrings[];
 
 COMPONENT_EXPORT(UI_BASE) extern const char kAglAppId[];
-COMPONENT_EXPORT(UI_BASE) extern const char kIsAglShell[];
+COMPONENT_EXPORT(UI_BASE) extern const char kAglShellAppId[];
 
 }  // namespace switches
 

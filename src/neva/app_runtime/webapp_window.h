@@ -17,10 +17,11 @@
 #ifndef NEVA_APP_RUNTIME_WEBAPP_WINDOW_H_
 #define NEVA_APP_RUNTIME_WEBAPP_WINDOW_H_
 
+#include "base/memory/weak_ptr.h"
 #include "base/timer/timer.h"
 #include "content/public/browser/web_contents_observer.h"
 #include "neva/app_runtime/public/app_runtime_constants.h"
-
+#include "neva/pal_service/appservice_delegate.h"
 #include "ui/display/display_observer.h"
 #include "ui/gfx/location_hint.h"
 #include "ui/views/widget/desktop_aura/neva/native_event_delegate.h"
@@ -191,6 +192,7 @@ class WebAppWindow : public views::NativeEventDelegate,
   void ShiftContentByY(int shift_height);
   void UpdateViewportYCallback();
   void RestoreContentByY();
+  void AglApplicationStarted(const std::string& application_id);
 
   views::Widget* widget_ = nullptr;
   views::WebView* webview_ = nullptr;
@@ -226,6 +228,9 @@ class WebAppWindow : public views::NativeEventDelegate,
 
   std::unique_ptr<wm::CursorManager> cursor_manager_;
   std::unique_ptr<WebAppScrollObserver> web_app_scroll_observer_;
+  std::unique_ptr<pal::AppServiceDelegate> app_service_delegate_;
+
+  base::WeakPtrFactory<WebAppWindow> weak_factory_{this};
 };
 
 }  // namespace neva_app_runtime

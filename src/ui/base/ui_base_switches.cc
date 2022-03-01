@@ -100,6 +100,6 @@ const char kAglAppId[] = "agl-appid";
 
 // Specifies that this application is the only one that binds to agl_shell
 // wayland protocol
-const char kIsAglShell[] = "is-agl-shell";
+const char kAglShellAppId[] = "agl-shell-appid";
 
 }  // namespace switches
