@@ -339,7 +339,7 @@ void WaylandConnection::Global(void* data,
   // Only one wayland client can bind to agl_shell. This should only be
   // activated if web applications are implementing the homescreen and
   // launcher.
-  bool is_agl_shell = command_line->HasSwitch(switches::kIsAglShell);
+  bool is_agl_shell = command_line->HasSwitch(switches::kAglShellAppId);
 
   static const struct agl_shell_desktop_listener agl_shell_desktop_listener = {
     AglDesktopAppIdEvent,

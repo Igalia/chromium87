@@ -19,6 +19,7 @@
 #include <climits>
 #include <cstdint>
 
+#include "base/command_line.h"
 #include "base/strings/utf_string_conversions.h"
 #include "content/browser/web_contents/web_contents_view.h"
 #include "content/public/browser/render_widget_host.h"
@@ -28,10 +29,14 @@
 #include "neva/app_runtime/public/webapp_window_delegate.h"
 #include "neva/app_runtime/public/window_group_configuration.h"
 #include "neva/app_runtime/ui/desktop_aura/app_runtime_desktop_native_widget_aura.h"
+#include "neva/pal_service/pal_platform_factory.h"
+#include "third_party/blink/public/common/thread_safe_browser_interface_broker_proxy.h"
+#include "third_party/blink/public/platform/platform.h"
 #include "ui/aura/window.h"
 #include "ui/aura/window_tree_host.h"
 #include "ui/base/ime/input_method.h"
 #include "ui/base/ime/text_input_client.h"
+#include "ui/base/ui_base_switches.h"
 #include "ui/base/ui_base_types.h"
 #include "ui/display/display.h"
 #include "ui/display/screen.h"
@@ -719,7 +724,21 @@ void WebAppWindow::SetWindowTitle(const base::string16& title) {
 }
 
 void WebAppWindow::SetAglAppId(const std::string& title) {
+  VLOG(1) << __func__ << " app_id =" << title;
   app_id_ = title;
+
+  std::string agl_shell_app_id =
+      base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII(
+          switches::kAglShellAppId);
+  if (app_id_ == agl_shell_app_id) {
+    app_service_delegate_ =
+        pal::PlatformFactory::Get()->CreateAppServiceDelegate();
+    if (app_service_delegate_) {
+      app_service_delegate_->SubscribeToApplicationStarted(base::BindRepeating(
+          &WebAppWindow::AglApplicationStarted, weak_factory_.GetWeakPtr()));
+    }
+  }
+
   if (widget_)
     widget_->SetAglAppId(title);
 }
@@ -996,6 +1015,11 @@ void WebAppWindow::DidCompleteSwap() {
     Activate();
   if (pending_show_)
     Show();
+}
+
+void WebAppWindow::AglApplicationStarted(const std::string& application_id) {
+  LOG(ERROR) << __func__ << " app_id=" << application_id;
+  SetAglActivateApp(application_id);
 }
 
 }  // namespace neva_app_runtime
