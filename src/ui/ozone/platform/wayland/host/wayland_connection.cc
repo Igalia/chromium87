@@ -391,8 +391,8 @@ void WaylandConnection::Global(void* data,
       return;
     }
     wl_seat_add_listener(connection->seat_.get(), &seat_listener, connection);
-    connection->CreateDataObjectsIfReady();
 #endif  // !defined(USE_NEVA_APPRUNTIME)
+    connection->CreateDataObjectsIfReady();
   } else if (!connection->shell_v6_ &&
              strcmp(interface, "zxdg_shell_v6") == 0) {
     // Check for zxdg_shell_v6 first.

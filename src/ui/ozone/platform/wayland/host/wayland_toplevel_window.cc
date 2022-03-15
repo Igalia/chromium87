@@ -113,6 +113,7 @@ bool WaylandToplevelWindow::StartDrag(const ui::OSExchangeData& data,
                                       WmDragHandler::Delegate* delegate) {
   DCHECK(!drag_handler_delegate_);
   drag_handler_delegate_ = delegate;
+  DCHECK(connection()->data_drag_controller());
   connection()->data_drag_controller()->StartSession(data, operation);
 
   base::RunLoop drag_loop(base::RunLoop::Type::kNestableTasksAllowed);
